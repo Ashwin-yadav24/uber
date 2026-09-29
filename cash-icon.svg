@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 28" width="30" height="20">
+  <!-- Background Note Paper -->
+  <rect x="0" y="0" width="44" height="28" rx="2" fill="#c8e8b8" />
+  
+  <!-- Outer Decorative Border with Notched Corners -->
+  <path d="M 5,6 
+           H 9 
+           A 3.5 3.5 0 0 1 12.5,2.5 
+           V 2.5 
+           H 31.5 
+           V 2.5 
+           A 3.5 3.5 0 0 1 35,6 
+           H 39 
+           V 10 
+           A 3.5 3.5 0 0 1 42.5,13.5 
+           V 14.5 
+           A 3.5 3.5 0 0 1 39,18 
+           V 22 
+           H 35 
+           A 3.5 3.5 0 0 1 31.5,25.5 
+           V 25.5 
+           H 12.5 
+           V 25.5 
+           A 3.5 3.5 0 0 1 9,22 
+           H 5 
+           V 18 
+           A 3.5 3.5 0 0 1 1.5,14.5 
+           V 13.5 
+           A 3.5 3.5 0 0 1 5,10 
+           Z" 
+        fill="none" 
+        stroke="#2e8540" 
+        stroke-width="1.9" 
+        stroke-linejoin="round" />
+
+  <!-- Four Corner Dots -->
+  <circle cx="5.2" cy="5.2" r="1.5" fill="#2e8540" />
+  <circle cx="38.8" cy="5.2" r="1.5" fill="#2e8540" />
+  <circle cx="5.2" cy="22.8" r="1.5" fill="#2e8540" />
+  <circle cx="38.8" cy="22.8" r="1.5" fill="#2e8540" />
+
+  <!-- Central Circle Symbol -->
+  <circle cx="22" cy="12.5" r="4" fill="none" stroke="#2e8540" stroke-width="1.9" />
+
+  <!-- Central Bottom Bar -->
+  <line x1="17.5" y1="20" x2="26.5" y2="20" stroke="#2e8540" stroke-width="1.9" stroke-linecap="round" />
+</svg>

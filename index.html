@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uber Receipt Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Modular Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- html2pdf.js for 1:1 pixel-perfect PDF export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="uber-logo-badge">Uber</div>
+      <div>
+        <div class="brand-title">Receipt Generator</div>
+        <div class="brand-subtitle">Pixel-perfect Uber ride receipt maker & PDF exporter</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="btn btn-outline" id="loadSampleBtn" onclick="resetToSample()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+          <path d="M3 3v5h5"/>
+        </svg>
+        Reset Sample
+      </button>
+      <button class="btn btn-outline" onclick="window.print()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 6 2 18 2 18 9"/>
+          <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+          <rect x="6" y="14" width="12" height="8"/>
+        </svg>
+        Print
+      </button>
+      <button class="btn btn-primary" id="downloadPdfBtn" onclick="downloadReceiptPdf()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Download PDF
+      </button>
+    </div>
+  </header>
+
+  <main class="main-layout">
+    <!-- FORM INPUTS -->
+    <div class="form-panel">
+      <div class="section-title">Passenger & Greeting</div>
+      <div class="field-row">
+        <div class="field-group">
+          <label>Passenger Name</label>
+          <input type="text" id="riderName" class="input-control" value="Rohit" oninput="updateReceipt()">
+        </div>
+        <div class="field-group">
+          <label>Time of Day / Message</label>
+          <select id="timeOfDay" class="input-control" onchange="updateReceipt()">
+            <option value="this morning">this morning</option>
+            <option value="this afternoon">this afternoon</option>
+            <option value="this evening">this evening</option>
+            <option value="tonight">tonight</option>
+            <option value="today">today</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="section-title">Offer Banner</div>
+      <div class="field-group">
+        <label class="checkbox-control">
+          <input type="checkbox" id="showOfferBanner" checked onchange="updateReceipt()">
+          Show Promotional Offer Banner
+        </label>
+      </div>
+      <div class="field-group" id="bannerTextInputGroup">
+        <label>Banner Text</label>
+        <input type="text" id="offerBannerText" class="input-control" value="Congratulations! You have offer on UberMoto." oninput="updateReceipt()">
+      </div>
+
+      <div class="section-title">Fares & Discount</div>
+      <div class="field-row">
+        <div class="field-group">
+          <label>Currency Symbol</label>
+          <input type="text" id="currencySymbol" class="input-control" value="₹" oninput="updateReceipt()">
+        </div>
+        <div class="field-group">
+          <label>Suggested Fare</label>
+          <input type="number" step="0.01" id="suggestedFare" class="input-control" value="126.32" oninput="calcTotals(); updateReceipt()">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label>Promotion Discount (-)</label>
+          <input type="number" step="0.01" id="promotionFare" class="input-control" value="2.00" oninput="calcTotals(); updateReceipt()">
+        </div>
+        <div class="field-group">
+          <label>Total Fare</label>
+          <input type="number" step="0.01" id="totalFare" class="input-control" value="124.32" oninput="updateReceipt()">
+        </div>
+      </div>
+
+      <div class="section-title">Payment Info</div>
+      <div class="field-row">
+        <div class="field-group">
+          <label>Payment Method</label>
+          <input type="text" id="paymentMethod" class="input-control" value="Cash." oninput="updateReceipt()">
+        </div>
+        <div class="field-group">
+          <label>Payment Date & Time</label>
+          <input type="text" id="paymentDateTime" class="input-control" value="1/16/26 6:56 AM" oninput="updateReceipt()">
+        </div>
+      </div>
+
+      <div class="section-title">Legal & Driver Agency</div>
+      <div class="field-group">
+        <label>Issued on behalf of</label>
+        <input type="text" id="issuedOnBehalf" class="input-control" value="NAVNIT -" oninput="updateReceipt()">
+      </div>
+
+      <div class="section-title">Trip & Vehicle Details</div>
+      <div class="field-row">
+        <div class="field-group">
+          <label>Ride Type</label>
+          <select id="vehicleType" class="input-control" onchange="onVehicleChange(); updateReceipt()">
+            <option value="Bike Saver" selected>Bike Saver</option>
+            <option value="Uber Moto">Uber Moto</option>
+            <option value="Uber Auto">Uber Auto</option>
+            <option value="Uber Go">Uber Go</option>
+            <option value="Uber Go Sedan">Uber Go Sedan</option>
+            <option value="Uber Premier">Uber Premier</option>
+            <option value="Uber XL">Uber XL</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label>Vehicle License Plate</label>
+          <input type="text" id="licensePlate" class="input-control" value="UP16SF4218" oninput="updateReceipt()">
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label>Distance</label>
+          <input type="text" id="tripDistance" class="input-control" value="10.22 kilometers" oninput="updateReceipt()">
+        </div>
+        <div class="field-group">
+          <label>Duration</label>
+          <input type="text" id="tripDuration" class="input-control" value="32 minutes" oninput="updateReceipt()">
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PREVIEW AREA -->
+    <div class="preview-area">
+      <div class="preview-header-bar">
+        <div class="preview-title">
+          <span>Live Document Preview</span>
+        </div>
+        <div class="preview-scale-notice">Print-ready / 100% exact replica</div>
+      </div>
+
+      <!-- EXACT UBER RECEIPT AS IN USER SCREENSHOT -->
+      <div class="receipt-container" id="receiptCard">
+        
+        <!-- Uber Wordmark Image -->
+        <div class="receipt-uber-logo">
+          <img src="uber-logo.png" alt="Uber" style="height: 26px; width: auto; display: block;">
+        </div>
+
+        <!-- Greeting -->
+        <div class="receipt-greeting" id="previewGreeting">Thanks for riding, Rohit</div>
+        <div class="receipt-subgreeting" id="previewSubgreeting">We hope you enjoyed your ride this morning.</div>
+
+        <div class="receipt-divider"></div>
+
+        <!-- Total Fare Header -->
+        <div class="receipt-total-row">
+          <div class="receipt-total-label">Total</div>
+          <div class="receipt-total-value" id="previewTotal">₹124.32</div>
+        </div>
+
+        <div class="receipt-divider"></div>
+
+        <!-- Green Offer Callout Banner -->
+        <div class="receipt-banner" id="previewOfferBanner">
+          <div class="banner-badge">
+            <svg viewBox="0 0 24 24">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <div class="banner-text" id="previewBannerText">Congratulations! You have offer on UberMoto.</div>
+        </div>
+
+        <!-- Fare Breakdown -->
+        <div class="receipt-breakdown">
+          <div class="breakdown-line">
+            <span>Suggested fare</span>
+            <span id="previewSuggestedFare">₹126.32</span>
+          </div>
+          <div class="breakdown-line promotion" id="previewPromotionRow">
+            <span>Promotion</span>
+            <span id="previewPromotionFare">-₹2.00</span>
+          </div>
+        </div>
+
+        <div class="receipt-divider"></div>
+
+        <!-- Payments -->
+        <div class="receipt-section-header">Payments</div>
+        <div class="payment-row">
+          <div class="payment-left">
+            <div class="payment-icon-wrapper">
+              <img src="cash-icon.svg" alt="Cash" width="28" height="18" style="display: block;">
+            </div>
+            <div>
+              <div class="payment-method-title" id="previewPaymentMethod">Cash.</div>
+              <div class="payment-timestamp" id="previewPaymentTime">1/16/26 6:56 AM</div>
+            </div>
+          </div>
+          <div class="payment-amount" id="previewPaymentAmount">₹124.32</div>
+        </div>
+
+        <div class="receipt-divider"></div>
+
+        <!-- Disclaimer text -->
+        <div class="receipt-disclaimer" id="previewDisclaimer">
+          This receipt reflects the Suggested Fare (excluding GST) and is not a tax invoice, but can be used for official reimbursement purposes. No GST is being recovered by Uber from the riders on this Trip. Uber does not provide transportation services; Issued on behalf of <span id="previewIssuedOnBehalf">NAVNIT -</span>
+        </div>
+
+        <div class="receipt-divider"></div>
+
+        <!-- Trip Details -->
+        <div class="trip-details-header">Trip details</div>
+        <div class="trip-info-grid">
+          <div class="trip-vehicle-info">
+            <!-- Dynamic Vehicle Icon (Bike / Auto / Car) -->
+            <div id="vehicleIconContainer">
+              <img src="bike.png" alt="Bike" style="width: 32px; height: 32px; object-fit: contain; display: block;">
+            </div>
+            <div>
+              <div class="vehicle-type-name" id="previewVehicleType">Bike Saver</div>
+              <div class="trip-distance-time" id="previewTripMetrics">10.22 kilometres, 32 minutes</div>
+            </div>
+          </div>
+          <div class="license-plate-block">
+            <div class="license-plate-label">License Plate:</div>
+            <div class="license-plate-number" id="previewLicensePlate">UP16SF4218</div>
+          </div>
+        </div>
+
+        <div class="receipt-divider trip-divider"></div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Modular Javascript -->
+  <script src="app.js"></script>
+</body>
+</html>
