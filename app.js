@@ -43,6 +43,16 @@ function calcTotals() {
 }
 
 /**
+ * Calculates suggested fare automatically based on total fare & promo
+ */
+function calcSuggestedFromTotal() {
+  const total = parseFloat(document.getElementById('totalFare').value) || 0;
+  const promo = parseFloat(document.getElementById('promotionFare').value) || 0;
+  const suggested = total + promo;
+  document.getElementById('suggestedFare').value = suggested.toFixed(2);
+}
+
+/**
  * Synchronizes all form inputs to the live preview receipt in real-time
  */
 function updateReceipt() {
