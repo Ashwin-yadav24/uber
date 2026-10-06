@@ -573,6 +573,43 @@ header {
   }
 }
 
+/* Mobile Tab Switcher Bar */
+.mobile-tab-bar {
+  display: none;
+  background: #11141d;
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 8px 12px;
+  gap: 8px;
+  position: sticky;
+  top: 0;
+  z-index: 45;
+}
+
+.mobile-tab-btn {
+  flex: 1;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.mobile-tab-btn.active {
+  background: #1c2230;
+  color: #fff;
+  border-color: #313c54;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
 .preview-scroll-wrapper {
   width: 100%;
   display: flex;
@@ -582,72 +619,101 @@ header {
   -webkit-overflow-scrolling: touch;
 }
 
-/* Tablet & Smaller Screens */
+/* Tablet Screens (<= 1024px) */
 @media (max-width: 1024px) {
   header {
-    padding: 1rem 1.4rem;
+    padding: 1rem 1.5rem;
   }
   
   .main-layout {
     grid-template-columns: 1fr;
-    padding: 1.4rem;
-    gap: 1.8rem;
+    padding: 1.5rem;
+    gap: 2rem;
   }
 
   .form-panel {
     max-height: none;
-    order: 2; /* Preview on top or below depending on workflow */
   }
 
   .preview-area {
-    order: 1;
     width: 100%;
   }
 
   .preview-header-bar {
-    max-width: 100%;
+    max-width: 595px;
   }
 }
 
-/* Mobile Devices */
-@media (max-width: 680px) {
+/* Mobile Devices (<= 768px) */
+@media (max-width: 768px) {
   header {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 14px;
-    padding: 1rem;
+    padding: 0.9rem 1rem;
+    flex-wrap: wrap;
+    gap: 12px;
+    position: relative;
   }
 
   .brand {
-    justify-content: flex-start;
+    gap: 10px;
+  }
+
+  .uber-logo-badge {
+    font-size: 1.15rem;
+    padding: 3px 10px;
+  }
+
+  .brand-title {
+    font-size: 1rem;
+  }
+
+  .brand-subtitle {
+    display: none; /* Hide subtitle to keep phone header clean */
   }
 
   .top-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
     width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.3fr;
+    gap: 8px;
   }
 
   .top-actions .btn {
-    flex: 1 1 calc(50% - 6px);
+    padding: 8px 10px;
+    font-size: 0.78rem;
     justify-content: center;
-    padding: 9px 12px;
-    font-size: 0.82rem;
   }
 
-  #downloadPdfBtn {
-    flex: 1 1 100%;
+  /* Show dedicated mobile tab bar */
+  .mobile-tab-bar {
+    display: flex;
   }
 
   .main-layout {
-    padding: 0.8rem 0.6rem;
-    gap: 1.2rem;
+    display: block;
+    padding: 12px;
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* By default show Form Editor, toggleable via tabs */
+  .main-layout:not(.show-preview-mode) .preview-area {
+    display: none;
+  }
+
+  .main-layout.show-preview-mode .form-panel {
+    display: none;
+  }
+
+  .main-layout.show-preview-mode .preview-area {
+    display: flex;
+    width: 100%;
   }
 
   .form-panel {
     padding: 1.1rem;
     border-radius: 12px;
+    box-shadow: none;
   }
 
   .field-row {
@@ -657,23 +723,66 @@ header {
 
   .preview-area {
     width: 100%;
-    padding: 0 4px;
+    padding: 0;
+    align-items: center;
   }
 
   .preview-header-bar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-    margin-bottom: 4px;
+    width: 100%;
+    padding: 4px 6px;
+    margin-bottom: 8px;
+  }
+
+  .preview-scale-notice {
+    font-size: 0.72rem;
   }
 
   .preview-scroll-wrapper {
     width: 100%;
-    justify-content: flex-start;
-    padding-bottom: 16px;
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    overflow: visible;
   }
 
+  /* Responsive scale for receipt on phone screens: fits screen width without horizontal overflow */
   .receipt-container {
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    max-width: 100%;
+    width: 100%;
+    min-height: auto;
+    padding: 24px 20px 28px 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+  }
+
+  .receipt-greeting {
+    font-size: 24px;
+    letter-spacing: -0.3px;
+  }
+
+  .receipt-subgreeting {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+
+  .receipt-total-label,
+  .receipt-total-value {
+    font-size: 20px;
+  }
+
+  .receipt-line-item {
+    font-size: 13px;
+  }
+
+  .payments-heading {
+    font-size: 17px;
+  }
+
+  .payment-row-amount {
+    font-size: 14px;
+  }
+
+  .trip-title {
+    font-size: 17px;
   }
 }

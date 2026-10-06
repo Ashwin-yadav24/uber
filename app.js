@@ -170,6 +170,29 @@ function downloadReceiptPdf() {
   });
 }
 
+/**
+ * Mobile tab switching between form editor and live preview
+ */
+function switchMobileTab(tab) {
+  const editorBtn = document.getElementById('tabEditorBtn');
+  const previewBtn = document.getElementById('tabPreviewBtn');
+  const mainLayout = document.getElementById('mainLayout');
+
+  if (!editorBtn || !previewBtn || !mainLayout) return;
+
+  if (tab === 'preview') {
+    editorBtn.classList.remove('active');
+    previewBtn.classList.add('active');
+    mainLayout.classList.add('show-preview-mode');
+    mainLayout.classList.remove('show-editor-mode');
+  } else {
+    previewBtn.classList.remove('active');
+    editorBtn.classList.add('active');
+    mainLayout.classList.add('show-editor-mode');
+    mainLayout.classList.remove('show-preview-mode');
+  }
+}
+
 // Initial setup on document load
 document.addEventListener('DOMContentLoaded', () => {
   updateReceipt();
